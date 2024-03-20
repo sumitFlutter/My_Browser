@@ -16,7 +16,18 @@ class _HomeScreenState extends State<HomeScreen> {
   WebProvider? webR;
   WebProvider? webW;
   InAppWebViewController ? inAppWebViewController;
+  PullToRefreshController? pull;
   TextEditingController webTxt=TextEditingController();
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    pull=PullToRefreshController(
+        onRefresh: (){
+          inAppWebViewController!.reload();
+        }
+    );
+  }
   @override
   Widget build(BuildContext context) {
     webR=context.read<WebProvider>();
@@ -44,7 +55,7 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               IconButton(onPressed: () async{
                 String url=(await inAppWebViewController!.getUrl()).toString();
-               bool? check= webR!.checkAddedBookmark(url);
+               bool? check= await webR!.checkAddedBookmark(url);
                if(check==true)
                  {
                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Already Added")));
@@ -72,7 +83,8 @@ class _HomeScreenState extends State<HomeScreen> {
               }, icon: Icon(Icons.arrow_forward_ios))
             ],),),
           PopupMenuItem(onTap: () {
-            Navigator.pushNamed(context, "bookmark");
+            webR!.getBookMark();
+            showBookmark();
           },
               child: Row(children: [
             Icon(Icons.bookmark),
@@ -91,6 +103,10 @@ class _HomeScreenState extends State<HomeScreen> {
             onProgressChanged: (controller, progress) {
               inAppWebViewController=controller;
               webR!.getProcess(progress/100);
+              if(progress==100)
+                {
+                  pull!.endRefreshing();
+                }
             },
             onReceivedError:(controller, request, error) {
               inAppWebViewController=controller;
@@ -99,12 +115,54 @@ class _HomeScreenState extends State<HomeScreen> {
                 inAppWebViewController=controller;
               },
               onLoadStop: (controller, url) {
+              pull!.endRefreshing();
                 inAppWebViewController=controller;
               },
+              pullToRefreshController: pull,
             ),
           ),
         ],
       ),
     ));
+  }
+  void showBookmark()
+  {
+    showModalBottomSheet(context: context, builder: (context) {
+      return  Padding(
+        padding: const EdgeInsets.all(10),
+        child: Column(
+          children: [
+            Text("On long press you can remove bookmarks"),
+            Expanded(
+              child: ListView.builder(itemBuilder: (context, index) {
+                return InkWell(
+                  onTap: () {
+                    inAppWebViewController?.loadUrl(urlRequest: URLRequest(url: WebUri(webW!.bookmarks[index])));
+                  },
+                  onLongPress: () {
+                    showDialog(context: context, builder: (context) {
+                      return AlertDialog(
+                        title: Text("Are You Sure?"),
+                        actions: [
+                          ElevatedButton(onPressed: () {
+                            webR!.removeBook(index);
+                          }, child: Text("Yes!")),
+                          ElevatedButton(onPressed: () {
+                            Navigator.pop(context);
+                          }, child: Text("No!"))
+                        ],
+                      );
+                    },);
+                  },
+                  child: Container(decoration: BoxDecoration(border: Border.all(),borderRadius: BorderRadius.circular(20)),
+                    child: Center(child: Text(webW!.bookmarks[index])),
+                    margin: EdgeInsets.all(10),),
+                );
+              },itemCount: webW!.bookmarks.length,),
+            )
+          ],
+        ),
+      );
+    },);
   }
 }

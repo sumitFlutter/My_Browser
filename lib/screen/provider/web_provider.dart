@@ -36,24 +36,33 @@ class WebProvider with ChangeNotifier{
   }
     notifyListeners();
   }
-  bool? checkAddedBookmark(String url)
-  {
+  Future<bool?> checkAddedBookmark(String url)
+  async {
+   await getBookmark();
     if(bookmarks.isEmpty)
       {
         return false;
       }
     else{
-      for(int i=0;i<bookmarks.length;)
+      for(int i=0;i<bookmarks.length;i++)
         {
           if(url==bookmarks[i])
             {
               return true;
             }
-          else{
-            i++;
-          }
-          break;
         }
     }
+    notifyListeners();
+  }
+  void getBookMark()
+  async {
+    if(await getBookmark()==null)
+    {
+    bookmarks=[];
+    }
+    else{
+  bookmarks=(await getBookmark())!;
+  }
+    notifyListeners();
   }
 }
