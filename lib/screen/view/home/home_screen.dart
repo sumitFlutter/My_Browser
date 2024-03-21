@@ -138,6 +138,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 return InkWell(
                   onTap: () {
                     inAppWebViewController?.loadUrl(urlRequest: URLRequest(url: WebUri(webW!.bookmarks[index])));
+                    Navigator.pop(context);
                   },
                   onLongPress: () {
                     showDialog(context: context, builder: (context) {
@@ -146,6 +147,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         actions: [
                           ElevatedButton(onPressed: () {
                             webR!.removeBook(index);
+                            Navigator.pop(context);
                           }, child: Text("Yes!")),
                           ElevatedButton(onPressed: () {
                             Navigator.pop(context);
