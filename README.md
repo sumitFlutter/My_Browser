@@ -7,6 +7,7 @@ A new Flutter project.
  A browser with <br>
      - Shared Preference And Provider<br>
      - In App WebView<br>
+     - Check Network connectivity<br>
      - Bookmark Functionality<br>
      - reload Site<br>
      - Google Search Engine<br>
