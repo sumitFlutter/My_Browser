@@ -149,7 +149,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             webR!.removeBook(index);
                             Navigator.pop(context);
                             Navigator.pop(context);
-                            webR!.
+                            webR!.getBookMark();
                           }, child: Text("Yes!")),
                           ElevatedButton(onPressed: () {
                             Navigator.pop(context);
