@@ -32,7 +32,6 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     webR=context.read<WebProvider>();
     webW=context.watch<WebProvider>();
-    Future.delayed(const Duration(seconds: 1),() => connectivityCheck(context));
     return SafeArea(child: Scaffold(
       appBar: AppBar(leading: IconButton(onPressed: () {
         inAppWebViewController?.loadUrl(urlRequest:  URLRequest(url: WebUri("https://www.google.com/")));

@@ -13,11 +13,11 @@ class _SpleshScreenState extends State<SpleshScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    Future.delayed(Duration(seconds: 4),() => Navigator.pushNamed(context, "home"),);
+    Future.delayed(const Duration(seconds: 4),() => Navigator.pushNamed(context, "home"),);
   }
   @override
   Widget build(BuildContext context) {
-    Future.delayed(Duration(seconds: 1),() =>   firstTimeM(context),);
+    Future.delayed(const Duration(seconds: 1),() =>   firstTimeM(context),);
     return SafeArea(
         child: Scaffold(
       body: Center(
