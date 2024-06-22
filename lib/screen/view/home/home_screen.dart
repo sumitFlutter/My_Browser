@@ -22,9 +22,52 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    pull=PullToRefreshController(
+    context.read<WebProvider>().checkOnline();
+    Future.delayed(Duration(seconds: 1),() {
+      if(context.watch<WebProvider>().isOnline==false)
+      {
+        showDialog(context: context, builder: (context) {
+          return AlertDialog(
+            content: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text("Connect to a network",
+                  style: TextStyle(fontWeight: FontWeight.bold),),
+                const SizedBox(height: 10,),
+                const Text(
+                    "To use Browser, turn on mobile data or\nconnect to Wi-Fi."),
+                const Divider(),
+                const SizedBox(height: 5,),
+                InkWell(
+                  onTap: () {
+                    context.read<WebProvider>().getNull();
+                    Navigator.pop(context);
+                  },
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.center, children: [
+                    Center(child:
+                    Text("OK!",style: TextStyle(color: Colors.blue),),),
+                  ],),
+                ),
+              ],
+            ),
+
+          );
+        },);
+      }
+      else if(context.watch<WebProvider>().isOnline==true)
+      {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("You Are Connected To Network.")));
+        context.read<WebProvider>().getNull();
+      }
+      else{
+        }
+
+    },);
+        pull=PullToRefreshController(
         onRefresh: (){
-          inAppWebViewController!.reload();
+          inAppWebViewController?.reload();
         }
     );
   }
@@ -36,7 +79,7 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(leading: IconButton(onPressed: () {
         inAppWebViewController?.loadUrl(urlRequest:  URLRequest(url: WebUri("https://www.google.com/")));
         webTxt.clear();
-      },icon: Icon(Icons.home),),
+      },icon: const Icon(Icons.home),),
        centerTitle: true,
        title: TextField(controller: webTxt,
        onSubmitted: (value) {
@@ -44,7 +87,7 @@ class _HomeScreenState extends State<HomeScreen> {
          webTxt.clear();
        },
        decoration: InputDecoration(
-       hintText: "Search AnyThing....",suffixIcon: IconButton(icon: Icon(Icons.search_rounded),onPressed: () {
+       hintText: "Search AnyThing....",suffixIcon: IconButton(icon: const Icon(Icons.search_rounded),onPressed: () {
        inAppWebViewController?.loadUrl(urlRequest: URLRequest(url: WebUri("https://www.google.com/search?q=${webTxt.text}")));
        webTxt.clear();
        },)),),
@@ -57,35 +100,35 @@ class _HomeScreenState extends State<HomeScreen> {
                bool? check= await webR!.checkAddedBookmark(url);
                if(check==true)
                  {
-                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Already Added")));
+                   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Already Added")));
                  }
                else{
                  webR!.addBookmark(url);
-                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Added")));
+                 ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Added")));
                }
 
-              }, icon: Icon(Icons.bookmark_add)),
+              }, icon: const Icon(Icons.bookmark_add)),
               IconButton(onPressed: () async{
                 bool? back=await inAppWebViewController?.canGoBack();
                 back==true?
                 inAppWebViewController?.goBack():
                     inAppWebViewController?.reload();
-              }, icon: Icon(Icons.arrow_back_ios_new)),
+              }, icon: const Icon(Icons.arrow_back_ios_new)),
               IconButton(onPressed: () {
                 inAppWebViewController?.reload();
-              }, icon: Icon(Icons.refresh)),
+              }, icon: const Icon(Icons.refresh)),
               IconButton(onPressed: () async{
                 bool? goAhead=await inAppWebViewController?.canGoForward();
                 goAhead==true?
                 inAppWebViewController?.goForward():
                     inAppWebViewController?.reload();
-              }, icon: Icon(Icons.arrow_forward_ios))
+              }, icon: const Icon(Icons.arrow_forward_ios))
             ],),),
           PopupMenuItem(onTap: () {
-            webR!.getBookMark();
+             webR!.getBookMark();
             showBookmark();
           },
-              child: Row(children: [
+              child: const Row(children: [
             Icon(Icons.bookmark),
             SizedBox(width: 3,),
             Text("bookmarks"),
@@ -131,7 +174,7 @@ class _HomeScreenState extends State<HomeScreen> {
         padding: const EdgeInsets.all(10),
         child: Column(
           children: [
-            Text("On long press you can remove bookmarks"),
+            const Text("On long press you can remove bookmarks"),
             Expanded(
               child: ListView.builder(itemBuilder: (context, index) {
                 return InkWell(
@@ -142,24 +185,24 @@ class _HomeScreenState extends State<HomeScreen> {
                   onLongPress: () {
                     showDialog(context: context, builder: (context) {
                       return AlertDialog(
-                        title: Text("Are You Sure?"),
+                        title: const Text("Are You Sure?"),
                         actions: [
                           ElevatedButton(onPressed: () {
                             webR!.removeBook(index);
                             Navigator.pop(context);
                             Navigator.pop(context);
                             webR!.getBookMark();
-                          }, child: Text("Yes!")),
+                          }, child: const Text("Yes!")),
                           ElevatedButton(onPressed: () {
                             Navigator.pop(context);
-                          }, child: Text("No!"))
+                          }, child: const Text("No!"))
                         ],
                       );
                     },);
                   },
                   child: Container(decoration: BoxDecoration(border: Border.all(),borderRadius: BorderRadius.circular(20)),
                     child: Center(child: Text(webW!.bookmarks[index])),
-                    margin: EdgeInsets.all(10),),
+                    margin: const EdgeInsets.all(10),),
                 );
               },itemCount: webW!.bookmarks.length,),
             )

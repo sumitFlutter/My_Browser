@@ -1,9 +1,12 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:my_browser/utils/connectivity_check.dart';
 import 'package:my_browser/utils/share_helper.dart';
 
 class WebProvider with ChangeNotifier{
   double process=0;
   List <String> bookmarks=[];
+  bool? isOnline;
   void getProcess(double p)
   {
     process=p;
@@ -65,4 +68,32 @@ class WebProvider with ChangeNotifier{
   }
     notifyListeners();
   }
+  void checkOnline()
+  {
+    Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
+      if (result == ConnectivityResult.none) {
+        isOnline=false;
+        notifyListeners();
+      }
+      else if(result==ConnectivityResult.other)
+        {
+          isOnline=null;
+          notifyListeners();
+        }
+      else{
+        isOnline=true;
+        notifyListeners();
+      }
+    });
+        }
+        Future<void> getOnline()
+        async {
+          isOnline=await firstTimeM();
+          notifyListeners();
+        }
+        void getNull()
+        {
+          isOnline=null;
+          notifyListeners();
+        }
 }
