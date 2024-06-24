@@ -17,54 +17,11 @@ class _SpleshScreenState extends State<SpleshScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    Future.delayed(Duration(seconds: 4),() => Navigator.pushReplacementNamed(context,"home"),);
-    context.read<WebProvider>().getOnline();
-    Future.delayed(Duration(seconds: 1),() {
-      if(context.read<WebProvider>().isOnline==false)
-      {
-        showDialog(context: context, builder: (context) {
-          return AlertDialog(
-            content: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Text("Connect to a network",
-                  style: TextStyle(fontWeight: FontWeight.bold),),
-                const SizedBox(height: 10,),
-                const Text(
-                    "To use Browser, turn on mobile data or\nconnect to Wi-Fi."),
-                const Divider(),
-                const SizedBox(height: 5,),
-                InkWell(
-                  onTap: () {
-                    context.read<WebProvider>().getNull();
-                    Navigator.pop(context);
-                  },
-                  child: const Row(
-                    mainAxisAlignment: MainAxisAlignment.center, children: [
-                    Center(child:
-                    Text("OK!",style: TextStyle(color: Colors.blue),),),
-                  ],),
-                ),
-              ],
-            ),
-
-          );
-        },);
-      }
-      else if(context.read<WebProvider>().isOnline==true)
-      {
-        ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text("You Are Connected To Network.")));
-        context.read<WebProvider>().getNull();
-      }
-      else {
-        }
-      },);
+    Future.delayed(Duration(seconds: 4),() => context.read<WebProvider>().navigateToHomeScreen(),);
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext splash) {
     return SafeArea(
       child: Scaffold(
         body: Center(

@@ -7,6 +7,7 @@ class WebProvider with ChangeNotifier{
   double process=0;
   List <String> bookmarks=[];
   bool? isOnline;
+  int screenIndex=0;
   void getProcess(double p)
   {
     process=p;
@@ -68,7 +69,7 @@ class WebProvider with ChangeNotifier{
   }
     notifyListeners();
   }
-  void checkOnline()
+ /* void checkOnline()
   {
     Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
       if (result == ConnectivityResult.none) {
@@ -95,5 +96,10 @@ class WebProvider with ChangeNotifier{
         {
           isOnline=null;
           notifyListeners();
-        }
+        }*/
+void navigateToHomeScreen()
+{
+  screenIndex=1;
+  notifyListeners();
+}
 }
